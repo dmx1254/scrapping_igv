@@ -54,7 +54,7 @@ module.exports.getAspecificProduct = async (req, res) => {
   (async () => {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    await page.goto("https://www.igv.com/fr/brawl-stars/accounts", {
+    await page.goto("https://www.igv.com/fr/xbox-membership/items", {
       waitUntil: "networkidle2",
     });
     await page.setViewport({ width: 1080, height: 1024 });
@@ -82,23 +82,21 @@ module.exports.getAspecificProduct = async (req, res) => {
           title: item.querySelector(".product-name")?.innerText,
           price: item.querySelector(".price-wrapper .price .price-num")
             ?.innerText,
-          imageUrl: item.querySelector(".product-img-box img")?.src,
+          imageUrl: item.querySelector(".product-img-box a img")?.src,
           // price: item.querySelector(".price-wrapper .price")?.innerText,
           currency: item.querySelector(".price-wrapper .currency")?.innerText,
           warranty: item.querySelector(
-            "price-wrapper .product-tag-box .product-horizontal"
+            ".price-wrapper .product-tag-box .tag-item"
           )?.innerText,
           listingTag: Array.from(
-            item.querySelectorAll(
-              ".price-wrapper .product-tag-box .tag-item product-horizontal"
-            )
+            item.querySelectorAll(".price-wrapper .product-tag-box .tag-item")
           ).map((item) => item.innerText),
         });
       }
       return data;
     });
 
-    console.log(result);
+    res.status(200).json(result);
 
     await page.close();
   })();
